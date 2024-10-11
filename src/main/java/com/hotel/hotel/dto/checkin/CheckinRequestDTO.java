@@ -18,6 +18,4 @@ public class CheckinRequestDTO {
     private LocalDateTime dataSaida;
 
     private Boolean adicionalVeiculo;
-
-    private BigDecimal valorHospedagem;
 }

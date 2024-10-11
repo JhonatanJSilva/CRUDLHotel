@@ -29,16 +29,16 @@ public class GuestController {
 
         GuestResponseDTO guestResponseDTO = new GuestResponseDTO(guestResponseAdapter);
 
-        URI uri = uriBuilder.path("/guest/{id}").buildAndExpand(guestResponseDTO.getId()).toUri();
+        URI uri = uriBuilder.path("/guest/create/{id}").buildAndExpand(guestResponseDTO.getId()).toUri();
 
         return ResponseEntity.created(uri).body(guestResponseDTO);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<GuestResponseDTO>> list(GuestRequestDTO guestRequestDTO) {
-        GuestRequestAdapter guestRequestAdapter = new GuestRequestAdapter(guestRequestDTO);
+    public ResponseEntity<List<GuestResponseDTO>> list() {
+        //GuestRequestAdapter guestRequestAdapter = new GuestRequestAdapter(guestRequestDTO);
 
-        List<GuestResponseAdapter> guestResponseAdapter = guestService.list(guestRequestAdapter);
+        List<GuestResponseAdapter> guestResponseAdapter = guestService.list();
 
         List<GuestResponseDTO> guestResponseDTO = guestResponseAdapter.stream().map(GuestResponseDTO::new).collect(Collectors.toList());
 

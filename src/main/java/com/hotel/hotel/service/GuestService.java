@@ -47,10 +47,10 @@ public class GuestService {
         return guestMapper.toGuestResponse(guestRepository.findByTelephone(telephone));
     }
 
-    public List<GuestResponseAdapter> list(GuestRequestAdapter guestRequestAdapter) {
-        if (guestRequestAdapter.getName() != null) {
-            return (List<GuestResponseAdapter>) guestMapper.toGuestResponse(guestRepository.findByName(guestRequestAdapter.getName()));
-        }
+    public List<GuestResponseAdapter> list() {
+//        if (guestRequestAdapter.getName() != null) {
+//            return (List<GuestResponseAdapter>) guestMapper.toGuestResponse(guestRepository.findByName(guestRequestAdapter.getName()));
+//        }
 
         return guestMapper.toGuestsDTO(guestRepository.findAll());
     }

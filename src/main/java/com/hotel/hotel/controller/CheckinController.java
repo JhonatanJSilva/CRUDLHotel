@@ -4,7 +4,6 @@ import com.hotel.hotel.adapter.checkin.CheckInRequestAdapter;
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
 import com.hotel.hotel.dto.checkin.CheckinRequestDTO;
 import com.hotel.hotel.dto.checkin.CheckinResponseDTO;
-import com.hotel.hotel.dto.guest.GuestResponseDTO;
 import com.hotel.hotel.service.CheckinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +21,11 @@ public class CheckinController {
 
     private final CheckinService checkinService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<CheckinResponseDTO> create(@RequestBody CheckinRequestDTO checkinRequestDTO, UriComponentsBuilder uriBuilder) {
         CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
 
-        CheckInResponseAdapter checkInResponseAdapter = checkinService.register(checkInRequestAdapter);
+        CheckInResponseAdapter checkInResponseAdapter = checkinService.create(checkInRequestAdapter);
 
         CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
 
@@ -40,13 +39,31 @@ public class CheckinController {
         CheckInResponseAdapter checkInResponseAdapter = checkinService.findById(id);
 
         CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
+        
+        return ResponseEntity.ok().body(checkinResponseDTO);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<CheckinResponseDTO>> list() {
+        List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.list();
+
+        List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(checkinResponseDTO);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CheckinResponseDTO>> findAll() {
-        List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.findAll();
+    @GetMapping("/listGuestsAtTheHotel")
+    public ResponseEntity<List<CheckinResponseDTO>> listGuestsAtTheHotel() {
+        List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.listGuestsAtTheHotel();
+
+        List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(checkinResponseDTO);
+    }
+
+    @GetMapping("/listGuestsAreNotInTheHotel")
+    public ResponseEntity<List<CheckinResponseDTO>> listGuestsAreNotInTheHotel() {
+        List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.listGuestsAreNotInTheHotel();
 
         List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
 
