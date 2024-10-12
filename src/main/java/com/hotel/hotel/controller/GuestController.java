@@ -34,17 +34,6 @@ public class GuestController {
         return ResponseEntity.created(uri).body(guestResponseDTO);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<GuestResponseDTO>> list() {
-        //GuestRequestAdapter guestRequestAdapter = new GuestRequestAdapter(guestRequestDTO);
-
-        List<GuestResponseAdapter> guestResponseAdapter = guestService.list();
-
-        List<GuestResponseDTO> guestResponseDTO = guestResponseAdapter.stream().map(GuestResponseDTO::new).collect(Collectors.toList());
-
-        return ResponseEntity.ok().body(guestResponseDTO);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<GuestResponseDTO> findById(@PathVariable Long id) {
         GuestResponseAdapter guestResponseAdapter = guestService.findById(id);
@@ -52,34 +41,6 @@ public class GuestController {
         GuestResponseDTO guestResponseDTO = new GuestResponseDTO(guestResponseAdapter);
 
         return ResponseEntity.ok().body(guestResponseDTO);
-    }
-
-    @GetMapping(value = "/name/{name}")
-    public ResponseEntity<GuestResponseDTO> findByName(@PathVariable(name = "name") String name) {
-        GuestResponseAdapter guestResponseAdapter = guestService.findByName(name);
-
-        GuestResponseDTO guestResponseDTO = new GuestResponseDTO(guestResponseAdapter);
-
-        return ResponseEntity.ok().body(guestResponseDTO);
-    }
-
-    @GetMapping(value = "/document/{document}")
-    public ResponseEntity<GuestResponseDTO> findByDocument(@PathVariable(name = "document") String document) {
-        GuestResponseAdapter guestResponseAdapter = guestService.findByDocument(document);
-
-        GuestResponseDTO guestResponseDTO = new GuestResponseDTO(guestResponseAdapter);
-
-        return ResponseEntity.ok().body(guestResponseDTO);
-    }
-
-    @GetMapping(value = "/telephone/{telephone}")
-    public ResponseEntity<GuestResponseDTO> findByTelephone(@PathVariable(name = "telephone") String telephone) {
-        GuestResponseAdapter guestResponseAdapter = guestService.findByTelephone(telephone);
-
-        GuestResponseDTO guestResponseDTO = new GuestResponseDTO(guestResponseAdapter);
-
-        return ResponseEntity.ok().body(guestResponseDTO);
-
     }
 
     @PutMapping(value = "/{id}")
@@ -96,5 +57,25 @@ public class GuestController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> delete(@PathVariable(value = "id") Long id) {
         return ResponseEntity.ok().body(guestService.delete(id));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<GuestResponseDTO>> list() {
+        List<GuestResponseAdapter> guestResponseAdapter = guestService.list();
+
+        List<GuestResponseDTO> guestResponseDTO = guestResponseAdapter.stream().map(GuestResponseDTO::new).collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(guestResponseDTO);
+    }
+
+    @GetMapping(value = "/find")
+    public ResponseEntity<GuestResponseDTO> find(@RequestBody GuestRequestDTO guestRequestDTO) {
+        GuestRequestAdapter guestRequestAdapter = new GuestRequestAdapter(guestRequestDTO);
+
+        GuestResponseAdapter guestResponseAdapter = guestService.find(guestRequestAdapter);
+
+        GuestResponseDTO guestResponseDTO = new GuestResponseDTO(guestResponseAdapter);
+
+        return ResponseEntity.ok().body(guestResponseDTO);
     }
 }

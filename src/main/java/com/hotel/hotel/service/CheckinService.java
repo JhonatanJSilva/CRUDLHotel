@@ -31,42 +31,16 @@ public class CheckinService {
     private final static BigDecimal WEEKEND_GARAGE_VALUE = BigDecimal.valueOf(20.00);
     private final static LocalTime CHECKOUT_HOUR_LIMIT = LocalTime.of(16, 30);
 
-    public CheckInResponseAdapter findById(Long id) {
-        return checkinMapper.toChekinResponse(returnCheckin(id));
-    }
-
-    public List<CheckInResponseAdapter> list() {
-        return checkinMapper.toChekinsDTO(checkinRepository.findAll());
-    }
-
-    public List<CheckInResponseAdapter> listGuestsAtTheHotel() {
-
-        List<CheckIn> listCheckIns = checkinRepository.findAll();
-
-        LocalDate today = LocalDate.now();
-
-        List<CheckIn> listAtTheHotel = listCheckIns.stream().filter(checkIn -> checkIn.getCheckoutDate().isAfter(today.atStartOfDay())).collect(Collectors.toList());
-
-        return checkinMapper.toChekinsDTO(listAtTheHotel);
-    }
-
-    public List<CheckInResponseAdapter> listGuestsAreNotInTheHotel() {
-
-        List<CheckIn> listCheckIns = checkinRepository.findAll();
-
-        LocalDate today = LocalDate.now();
-
-        List<CheckIn> listAtTheHotel = listCheckIns.stream().filter(checkIn -> checkIn.getCheckoutDate().isBefore(today.atStartOfDay())).collect(Collectors.toList());
-
-        return checkinMapper.toChekinsDTO(listAtTheHotel);
-    }
-
     public CheckInResponseAdapter create(CheckInRequestAdapter checkInRequest) {
         checkInRequest.setHostingValue(calculateAccommodationValue(checkInRequest));
 
         CheckIn checkin = checkinMapper.toCheckin(checkInRequest);
 
         return checkinMapper.toChekinResponse(checkinRepository.save(checkin));
+    }
+
+    public CheckInResponseAdapter findById(Long id) {
+        return checkinMapper.toChekinResponse(returnCheckin(id));
     }
 
     public CheckInResponseAdapter update(Long id, CheckInRequestAdapter checkInRequest) {
@@ -79,7 +53,22 @@ public class CheckinService {
 
     public String delete(Long id) {
         checkinRepository.deleteById(id);
+
         return "Checkin:" + id + " deleted.";
+    }
+
+    public List<CheckInResponseAdapter> list() {
+        return checkinMapper.toChekinsDTO(checkinRepository.findAll());
+    }
+
+    public List<CheckInResponseAdapter> listGuestsAtTheHotel() {
+        List<CheckIn> listCheckIns = checkinRepository.findAll();
+
+        LocalDate today = LocalDate.now();
+
+        List<CheckIn> listAtTheHotel = listCheckIns.stream().filter(checkIn -> checkIn.getCheckoutDate().isAfter(today.atStartOfDay())).collect(Collectors.toList());
+
+        return checkinMapper.toChekinsDTO(listAtTheHotel);
     }
 
     private CheckIn returnCheckin(Long id) {

@@ -18,14 +18,9 @@ import java.util.List;
 public class GuestService {
 
     private final GuestRepository guestRepository;
-
     private final GuestMapper guestMapper;
 
     public GuestResponseAdapter create(GuestRequestAdapter guestAdapter) {
-//        if (guestAdapter.getName()){
-//            throw new RuntimeException("Campo nome invalido")
-//        }
-
         Guest guest = guestMapper.toGuest(guestAdapter);
 
         return guestMapper.toGuestResponse(guestRepository.save(guest));
@@ -33,26 +28,6 @@ public class GuestService {
 
     public GuestResponseAdapter findById(Long id) {
         return guestMapper.toGuestResponse(returnGuest(id));
-    }
-
-    public GuestResponseAdapter findByName(String name) {
-        return guestMapper.toGuestResponse(guestRepository.findByName(name));
-    }
-
-    public GuestResponseAdapter findByDocument(String document) {
-        return guestMapper.toGuestResponse(guestRepository.findByDocument(document));
-    }
-
-    public GuestResponseAdapter findByTelephone(String telephone) {
-        return guestMapper.toGuestResponse(guestRepository.findByTelephone(telephone));
-    }
-
-    public List<GuestResponseAdapter> list() {
-//        if (guestRequestAdapter.getName() != null) {
-//            return (List<GuestResponseAdapter>) guestMapper.toGuestResponse(guestRepository.findByName(guestRequestAdapter.getName()));
-//        }
-
-        return guestMapper.toGuestsDTO(guestRepository.findAll());
     }
 
     public GuestResponseAdapter update(Long id, GuestRequestAdapter guestRequest) {
@@ -68,9 +43,40 @@ public class GuestService {
         return "Guest id: "+ id +" deleted.";
     }
 
-    private Guest returnGuest(Long id) {
-        return  guestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Guest not found."));
+    public List<GuestResponseAdapter> list() {
+        return guestMapper.toGuestsDTO(guestRepository.findAll());
+    }
 
+    public GuestResponseAdapter find(GuestRequestAdapter requestAdapter) {
+        String name = requestAdapter.getName();
+        String document = requestAdapter.getDocument();
+        String telephone = requestAdapter.getTelephone();
+
+        if (name != null) {
+             Guest guestByName = guestRepository.findByName(name);
+             if (guestByName != null ) {
+                 return guestMapper.toGuestResponse(guestByName);
+             }
+        }
+
+        if (document != null) {
+            Guest guestByDocument = guestRepository.findByDocument(document);
+            if (guestByDocument != null) {
+                return guestMapper.toGuestResponse(guestByDocument);
+            }
+        }
+
+        if (telephone != null) {
+            Guest guestByTelephone = guestRepository.findByTelephone(telephone);
+            if (guestByTelephone != null) {
+                return guestMapper.toGuestResponse(guestByTelephone);
+            }
+        }
+
+        throw new RuntimeException("Guest not found.");
+    }
+
+    private Guest returnGuest(Long id) {
+        return  guestRepository.findById(id).orElseThrow(() -> new RuntimeException("Guest not found."));
     }
 }

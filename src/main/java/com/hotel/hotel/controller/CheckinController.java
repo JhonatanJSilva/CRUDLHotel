@@ -43,6 +43,22 @@ public class CheckinController {
         return ResponseEntity.ok().body(checkinResponseDTO);
     }
 
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CheckinResponseDTO> update(@RequestBody CheckinRequestDTO checkinRequestDTO, @PathVariable(name = "id") long id) {
+        CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
+
+        CheckInResponseAdapter checkInResponseAdapter = checkinService.update(id, checkInRequestAdapter);
+
+        CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
+
+        return ResponseEntity.ok().body(checkinResponseDTO);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<String> delete(@PathVariable(value = "id") Long id) {
+        return ResponseEntity.ok().body(checkinService.delete(id));
+    }
+
     @GetMapping("/list")
     public ResponseEntity<List<CheckinResponseDTO>> list() {
         List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.list();
@@ -59,31 +75,6 @@ public class CheckinController {
         List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(checkinResponseDTO);
-    }
-
-    @GetMapping("/listGuestsAreNotInTheHotel")
-    public ResponseEntity<List<CheckinResponseDTO>> listGuestsAreNotInTheHotel() {
-        List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.listGuestsAreNotInTheHotel();
-
-        List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
-
-        return ResponseEntity.ok().body(checkinResponseDTO);
-    }
-
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<CheckinResponseDTO> update(@RequestBody CheckinRequestDTO checkinRequestDTO, @PathVariable(name = "id") long id) {
-        CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
-
-        CheckInResponseAdapter checkInResponseAdapter = checkinService.update(id, checkInRequestAdapter);
-
-        CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
-
-        return ResponseEntity.ok().body(checkinResponseDTO);
-    }
-
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> delete(@PathVariable(value = "id") Long id) {
-        return ResponseEntity.ok().body(checkinService.delete(id));
     }
 }
 
