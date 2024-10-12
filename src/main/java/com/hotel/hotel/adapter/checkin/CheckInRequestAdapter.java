@@ -14,18 +14,18 @@ public class CheckInRequestAdapter {
 
     private Guest guest;
 
-    private LocalDateTime dateCheckin;
+    private LocalDateTime checkInDate;
 
-    private LocalDateTime dateCheckout;
+    private LocalDateTime checkoutDate;
 
     private Boolean additionalVehicle;
 
-    private BigDecimal valueHosting;
+    private BigDecimal hostingValue;
 
     public CheckInRequestAdapter(CheckinRequestDTO checkinRequestDTO) {
         this.guest = checkinRequestDTO.getHospede();
-        this.dateCheckin = checkinRequestDTO.getDataEntrada();
-        this.dateCheckout = checkinRequestDTO.getDataSaida();
+        this.checkInDate = checkinRequestDTO.getDataEntrada();
+        this.checkoutDate = checkinRequestDTO.getDataSaida();
         this.additionalVehicle = checkinRequestDTO.getAdicionalVeiculo();
     }
 }

@@ -14,10 +14,10 @@ public class CheckinMapper {
     public CheckIn toCheckin(CheckInRequestAdapter checkInRequest) {
         return CheckIn.builder()
                 .guest(checkInRequest.getGuest())
-                .checkInDate(checkInRequest.getDateCheckin())
-                .checkoutDate(checkInRequest.getDateCheckout())
+                .checkInDate(checkInRequest.getCheckInDate())
+                .checkoutDate(checkInRequest.getCheckoutDate())
                 .additionalVehicle(checkInRequest.getAdditionalVehicle())
-                .hostingValue(checkInRequest.getValueHosting())
+                .hostingValue(checkInRequest.getHostingValue())
                 .build();
     }
 
@@ -31,10 +31,10 @@ public class CheckinMapper {
 
     public void updateChekinData(CheckIn checkin, CheckInRequestAdapter checkinDTO) {
         checkin.setGuest(checkinDTO.getGuest());
-        checkin.setCheckInDate(checkinDTO.getDateCheckin());
-        checkin.setCheckoutDate(checkinDTO.getDateCheckout());
+        checkin.setCheckInDate(checkinDTO.getCheckInDate());
+        checkin.setCheckoutDate(checkinDTO.getCheckoutDate());
         checkin.setAdditionalVehicle(checkinDTO.getAdditionalVehicle());
-        checkin.setHostingValue(checkinDTO.getValueHosting());
+        checkin.setHostingValue(checkinDTO.getHostingValue());
     }
 
 

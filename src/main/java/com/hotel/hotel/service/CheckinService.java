@@ -5,6 +5,7 @@ import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
 import com.hotel.hotel.entity.CheckIn;
 import com.hotel.hotel.repository.CheckinRepository;
 import com.hotel.hotel.util.CheckinMapper;
+import com.hotel.hotel.util.CustomDateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,13 @@ import java.util.stream.Collectors;
 public class CheckinService {
 
     private final CheckinRepository checkinRepository;
-
     private final CheckinMapper checkinMapper;
 
     private final static BigDecimal WEEKDAY_VALUE = BigDecimal.valueOf(120.00);
     private final static BigDecimal WEEKEND_VALUE = BigDecimal.valueOf(150.00);
     private final static BigDecimal WEEKDAY_GARAGE_VALUE = BigDecimal.valueOf(15.00);
     private final static BigDecimal WEEKEND_GARAGE_VALUE = BigDecimal.valueOf(20.00);
+    private final static LocalTime CHECKOUT_HOUR_LIMIT = LocalTime.of(16, 30);
 
     public CheckInResponseAdapter findById(Long id) {
         return checkinMapper.toChekinResponse(returnCheckin(id));
@@ -61,7 +62,7 @@ public class CheckinService {
     }
 
     public CheckInResponseAdapter create(CheckInRequestAdapter checkInRequest) {
-        checkInRequest.setValueHosting(calculateAccommodationValue(checkInRequest));
+        checkInRequest.setHostingValue(calculateAccommodationValue(checkInRequest));
 
         CheckIn checkin = checkinMapper.toCheckin(checkInRequest);
 
@@ -87,49 +88,36 @@ public class CheckinService {
     }
 
     private BigDecimal calculateAccommodationValue(CheckInRequestAdapter checkInRequest) {
-        LocalDateTime startDate = checkInRequest.getDateCheckin();
-        LocalDateTime endDate = checkInRequest.getDateCheckout();
+        LocalDateTime startDate = checkInRequest.getCheckInDate();
+        LocalDateTime endDate = checkInRequest.getCheckoutDate();
 
         int weekday = 0;
         int weekend = 0;
 
-
         while (startDate.isBefore(endDate)) {
             DayOfWeek dayOfWeek = startDate.getDayOfWeek();
+            startDate = startDate.plusDays(1);
 
-            if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
+            if (startDate.getDayOfYear() == endDate.getDayOfYear() && !endDate.toLocalTime().isAfter(CHECKOUT_HOUR_LIMIT)) continue;
+
+            if (!CustomDateUtils.isWeekendDay(dayOfWeek)) {
                 weekday++;
             } else {
                 weekend++;
             }
-            startDate = startDate.plusDays(1);
         }
 
-        LocalTime limitHour = LocalTime.of(16, 30);
+        BigDecimal weekdayTotalValue = WEEKDAY_VALUE;
+        BigDecimal weekendTotalValue = WEEKEND_VALUE;
 
-        if(endDate.toLocalTime().isBefore(limitHour)) {
-
-            DayOfWeek dayOfWeek = endDate.getDayOfWeek();
-
-            if(dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
-                weekday--;
-            } else {
-                weekend--;
-            }
+        if (checkInRequest.getAdditionalVehicle()) {
+            weekdayTotalValue = weekdayTotalValue.add(WEEKDAY_GARAGE_VALUE);
+            weekendTotalValue = weekendTotalValue.add(WEEKEND_GARAGE_VALUE);
         }
 
-        BigDecimal valueDaysOfWeek = (WEEKDAY_VALUE.multiply(BigDecimal.valueOf(weekday)));
-        BigDecimal valueDaysWeekend = (WEEKEND_VALUE.multiply(BigDecimal.valueOf(weekend)));
-        BigDecimal valueGarageWeekday = BigDecimal.valueOf(0.0);
-        BigDecimal valueGarageWeekend = BigDecimal.valueOf(0.0);
+        BigDecimal valueDaysOfWeek = (weekdayTotalValue.multiply(BigDecimal.valueOf(weekday)));
+        BigDecimal valueDaysWeekend = (weekendTotalValue.multiply(BigDecimal.valueOf(weekend)));
 
-        if(checkInRequest.getAdditionalVehicle()) {
-            valueGarageWeekday = (WEEKDAY_GARAGE_VALUE.multiply(BigDecimal.valueOf(weekday)));
-            valueGarageWeekend = (WEEKEND_GARAGE_VALUE.multiply(BigDecimal.valueOf(weekend)));
-        }
-
-        BigDecimal finalValue = valueDaysOfWeek.add(valueDaysWeekend).add(valueGarageWeekday).add(valueGarageWeekend);
-
-        return (finalValue);
+        return (valueDaysOfWeek.add(valueDaysWeekend));
     }
 }
