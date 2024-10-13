@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 @Primary
@@ -61,14 +61,16 @@ public class CheckinService {
         return checkinMapper.toChekinsDTO(checkinRepository.findAll());
     }
 
-    public List<CheckInResponseAdapter> listGuestsAtTheHotel() {
-        List<CheckIn> listCheckIns = checkinRepository.findAll();
+    public List<Map<Integer, BigDecimal>> valueTotalAllGuests() {
+        return checkinRepository.valueTotalAllGuests(LocalDate.now());
+    }
 
-        LocalDate today = LocalDate.now();
+    public List<CheckInResponseAdapter> guestsAtTheHotel(Boolean guestsAtTheHotel) {
+        if(guestsAtTheHotel) {
+            return checkinMapper.toChekinsDTO(checkinRepository.guestsAtTheHotel(LocalDate.now()));
+        }
 
-        List<CheckIn> listAtTheHotel = listCheckIns.stream().filter(checkIn -> checkIn.getCheckoutDate().isAfter(today.atStartOfDay())).collect(Collectors.toList());
-
-        return checkinMapper.toChekinsDTO(listAtTheHotel);
+        return checkinMapper.toChekinsDTO(checkinRepository.guestsAreNotInTheHotel(LocalDate.now()));
     }
 
     private CheckIn returnCheckin(Long id) {

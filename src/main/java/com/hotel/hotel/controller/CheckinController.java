@@ -4,14 +4,17 @@ import com.hotel.hotel.adapter.checkin.CheckInRequestAdapter;
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
 import com.hotel.hotel.dto.checkin.CheckinRequestDTO;
 import com.hotel.hotel.dto.checkin.CheckinResponseDTO;
+import com.hotel.hotel.entity.CheckIn;
 import com.hotel.hotel.service.CheckinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -68,11 +71,16 @@ public class CheckinController {
         return ResponseEntity.ok().body(checkinResponseDTO);
     }
 
-    @GetMapping("/listGuestsAtTheHotel")
-    public ResponseEntity<List<CheckinResponseDTO>> listGuestsAtTheHotel() {
-        List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.listGuestsAtTheHotel();
+    @GetMapping("/valueTotalAllGuests")
+    public ResponseEntity<List<Map<Integer, BigDecimal>>> valueTotalAllGuests() {
+        List<Map<Integer, BigDecimal>> checkInResponseAdapters = checkinService.valueTotalAllGuests();
 
-        List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
+        return ResponseEntity.ok().body(checkInResponseAdapters);
+    }
+
+    @GetMapping("/guestsAtTheHotel/{guestsAtTheHotel}")
+    public ResponseEntity<List<CheckinResponseDTO>> guestsAtTheHotel(@PathVariable(value = "guestsAtTheHotel") Boolean guestsAtTheHotel) {
+        List<CheckinResponseDTO> checkinResponseDTO = checkinService.guestsAtTheHotel(guestsAtTheHotel).stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(checkinResponseDTO);
     }
