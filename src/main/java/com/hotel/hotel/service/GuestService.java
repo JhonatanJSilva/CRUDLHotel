@@ -21,26 +21,44 @@ public class GuestService {
     private final GuestMapper guestMapper;
 
     public GuestResponseAdapter create(GuestRequestAdapter guestAdapter) {
-        Guest guest = guestMapper.toGuest(guestAdapter);
+        String name = guestAdapter.getName();
+        String document = guestAdapter.getDocument();
+        String telephone = guestAdapter.getTelephone();
 
+        if (name == null || name.isEmpty()) throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
+        if (document == null || document.isEmpty()) throw new IllegalArgumentException("O documento não pode ser nulo ou vazio.");
+        if (telephone == null || telephone.isEmpty()) throw new IllegalArgumentException("O telefone não pode ser nulo ou vazio.");
+
+        Guest guest = guestMapper.toGuest(guestAdapter);
         return guestMapper.toGuestResponse(guestRepository.save(guest));
     }
 
     public GuestResponseAdapter findById(Long id) {
+        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+
         return guestMapper.toGuestResponse(returnGuest(id));
     }
 
-    public GuestResponseAdapter update(Long id, GuestRequestAdapter guestRequest) {
+    public GuestResponseAdapter update(Long id, GuestRequestAdapter guestAdapter) {
+        String name = guestAdapter.getName();
+        String document = guestAdapter.getDocument();
+        String telephone = guestAdapter.getTelephone();
+
+        if (name == null || name.isEmpty()) throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
+        if (document == null || document.isEmpty()) throw new IllegalArgumentException("O documento não pode ser nulo ou vazio.");
+        if (telephone == null || telephone.isEmpty()) throw new IllegalArgumentException("O telefone não pode ser nulo ou vazio.");
+        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+
         Guest guest = returnGuest(id);
-
-        guestMapper.updateGuestData(guest, guestRequest);
-
+        guestMapper.updateGuestData(guest, guestAdapter);
         return guestMapper.toGuestResponse(guestRepository.save(guest));
     }
 
     public String delete(Long id) {
+        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+
         guestRepository.deleteById(id);
-        return "Guest id: "+ id +" deleted.";
+        return "Hospede id: "+ id +" deletado.";
     }
 
     public List<GuestResponseAdapter> list() {
@@ -73,10 +91,10 @@ public class GuestService {
             }
         }
 
-        throw new RuntimeException("Guest not found.");
+        throw new IllegalArgumentException("Hospede não encontrado.");
     }
 
     private Guest returnGuest(Long id) {
-        return  guestRepository.findById(id).orElseThrow(() -> new RuntimeException("Guest not found."));
+        return  guestRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Hospede não encontrado."));
     }
 }

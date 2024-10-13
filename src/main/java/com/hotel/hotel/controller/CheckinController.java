@@ -25,64 +25,95 @@ public class CheckinController {
     private final CheckinService checkinService;
 
     @PostMapping("/create")
-    public ResponseEntity<CheckinResponseDTO> create(@RequestBody CheckinRequestDTO checkinRequestDTO, UriComponentsBuilder uriBuilder) {
-        CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
+    public ResponseEntity<?> create(@RequestBody CheckinRequestDTO checkinRequestDTO, UriComponentsBuilder uriBuilder) {
+        try {
+            CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
+            CheckInResponseAdapter checkInResponseAdapter = checkinService.create(checkInRequestAdapter);
+            CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
 
-        CheckInResponseAdapter checkInResponseAdapter = checkinService.create(checkInRequestAdapter);
+            URI uri = uriBuilder.path("/checkin/{id}").buildAndExpand(checkinResponseDTO.getId()).toUri();
 
-        CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
-
-        URI uri = uriBuilder.path("/checkin/{id}").buildAndExpand(checkinResponseDTO.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(checkinResponseDTO);
+            return ResponseEntity.created(uri).body(checkinResponseDTO);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("An unexpected error occurred: " + exception.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CheckinResponseDTO> findBiId(@PathVariable(name = "id") Long id) {
-        CheckInResponseAdapter checkInResponseAdapter = checkinService.findById(id);
+    public ResponseEntity<?> findBiId(@PathVariable(name = "id") Long id) {
+        try {
+            CheckInResponseAdapter checkInResponseAdapter = checkinService.findById(id);
+            CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
 
-        CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
-        
-        return ResponseEntity.ok().body(checkinResponseDTO);
+            return ResponseEntity.ok().body(checkinResponseDTO);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("An unexpected error occurred: " + exception.getMessage());
+        }
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CheckinResponseDTO> update(@RequestBody CheckinRequestDTO checkinRequestDTO, @PathVariable(name = "id") long id) {
-        CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
+    public ResponseEntity<?> update(@RequestBody CheckinRequestDTO checkinRequestDTO, @PathVariable(name = "id") long id) {
+        try {
+            CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
+            CheckInResponseAdapter checkInResponseAdapter = checkinService.update(id, checkInRequestAdapter);
+            CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
 
-        CheckInResponseAdapter checkInResponseAdapter = checkinService.update(id, checkInRequestAdapter);
-
-        CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
-
-        return ResponseEntity.ok().body(checkinResponseDTO);
+            return ResponseEntity.ok().body(checkinResponseDTO);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("An unexpected error occurred: " + exception.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> delete(@PathVariable(value = "id") Long id) {
-        return ResponseEntity.ok().body(checkinService.delete(id));
+        try {
+            return ResponseEntity.ok().body(checkinService.delete(id));
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("An unexpected error occurred: " + exception.getMessage());
+        }
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<CheckinResponseDTO>> list() {
-        List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.list();
+    public ResponseEntity<?> list() {
+        try {
+            List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.list();
+            List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
 
-        List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
-
-        return ResponseEntity.ok().body(checkinResponseDTO);
+            return ResponseEntity.ok().body(checkinResponseDTO);
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("An unexpected error occurred: " + exception.getMessage());
+        }
     }
 
     @GetMapping("/valueTotalAllGuests")
-    public ResponseEntity<List<Map<Integer, BigDecimal>>> valueTotalAllGuests() {
-        List<Map<Integer, BigDecimal>> checkInResponseAdapters = checkinService.valueTotalAllGuests();
+    public ResponseEntity<?> valueTotalAllGuests() {
+        try {
+            List<Map<Integer, BigDecimal>> checkInResponseAdapters = checkinService.valueTotalAllGuests();
 
-        return ResponseEntity.ok().body(checkInResponseAdapters);
+            return ResponseEntity.ok().body(checkInResponseAdapters);
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("An unexpected error occurred: " + exception.getMessage());
+        }
     }
 
     @GetMapping("/guestsAtTheHotel/{guestsAtTheHotel}")
-    public ResponseEntity<List<CheckinResponseDTO>> guestsAtTheHotel(@PathVariable(value = "guestsAtTheHotel") Boolean guestsAtTheHotel) {
-        List<CheckinResponseDTO> checkinResponseDTO = checkinService.guestsAtTheHotel(guestsAtTheHotel).stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
+    public ResponseEntity<?> guestsAtTheHotel(@PathVariable(value = "guestsAtTheHotel") Boolean guestsAtTheHotel) {
+        try {
+            List<CheckinResponseDTO> checkinResponseDTO = checkinService.guestsAtTheHotel(guestsAtTheHotel).stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(checkinResponseDTO);
+            return ResponseEntity.ok().body(checkinResponseDTO);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("An unexpected error occurred: " + exception.getMessage());
+        }
     }
 }
-

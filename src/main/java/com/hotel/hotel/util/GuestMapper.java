@@ -16,7 +16,6 @@ public class GuestMapper {
                 .document(guestAdapter.getDocument())
                 .telephone(guestAdapter.getTelephone())
                 .build();
-
     }
 
     public GuestResponseAdapter toGuestResponse(Guest guest) {
@@ -32,6 +31,4 @@ public class GuestMapper {
         guest.setDocument(guestRequestAdapter.getDocument());
         guest.setTelephone(guestRequestAdapter.getTelephone());
     }
-
-
 }

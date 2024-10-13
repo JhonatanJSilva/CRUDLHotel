@@ -3,6 +3,7 @@ package com.hotel.hotel.service;
 import com.hotel.hotel.adapter.checkin.CheckInRequestAdapter;
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
 import com.hotel.hotel.entity.CheckIn;
+import com.hotel.hotel.entity.Guest;
 import com.hotel.hotel.repository.CheckinRepository;
 import com.hotel.hotel.util.CheckinMapper;
 import com.hotel.hotel.util.CustomDateUtils;
@@ -32,29 +33,49 @@ public class CheckinService {
     private final static LocalTime CHECKOUT_HOUR_LIMIT = LocalTime.of(16, 30);
 
     public CheckInResponseAdapter create(CheckInRequestAdapter checkInRequest) {
+        Guest guest = checkInRequest.getGuest();
+        LocalDateTime checkInDate = checkInRequest.getCheckInDate();
+        LocalDateTime checkoutDate = checkInRequest.getCheckoutDate();
+        Boolean additionalVehicle = checkInRequest.getAdditionalVehicle();
+
+        if (guest == null) throw new IllegalArgumentException("O ID do hospede não pode ser nulo ou vazio.");
+        if (checkInDate == null) throw new IllegalArgumentException("A data de check in não pode ser nulo ou vazio.");
+        if (checkoutDate == null) throw new IllegalArgumentException("A data de checkout não pode ser nulo ou vazio.");
+        if (additionalVehicle == null) throw new IllegalArgumentException("O adicional veiculo não pode ser nulo ou vazio.");
+
         checkInRequest.setHostingValue(calculateAccommodationValue(checkInRequest));
-
         CheckIn checkin = checkinMapper.toCheckin(checkInRequest);
-
         return checkinMapper.toChekinResponse(checkinRepository.save(checkin));
     }
 
     public CheckInResponseAdapter findById(Long id) {
+        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+
         return checkinMapper.toChekinResponse(returnCheckin(id));
     }
 
     public CheckInResponseAdapter update(Long id, CheckInRequestAdapter checkInRequest) {
+        Guest guest = checkInRequest.getGuest();
+        LocalDateTime checkInDate = checkInRequest.getCheckInDate();
+        LocalDateTime checkoutDate = checkInRequest.getCheckoutDate();
+        Boolean additionalVehicle = checkInRequest.getAdditionalVehicle();
+
+        if (guest == null) throw new IllegalArgumentException("O ID do hospede não pode ser nulo ou vazio.");
+        if (checkInDate == null) throw new IllegalArgumentException("A data de check in não pode ser nulo ou vazio.");
+        if (checkoutDate == null) throw new IllegalArgumentException("A data de checkout não pode ser nulo ou vazio.");
+        if (additionalVehicle == null) throw new IllegalArgumentException("O adicional veiculo não pode ser nulo ou vazio.");
+        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+
         CheckIn checkin = returnCheckin(id);
-
         checkinMapper.updateChekinData(checkin, checkInRequest);
-
         return checkinMapper.toChekinResponse(checkinRepository.save(checkin));
     }
 
     public String delete(Long id) {
-        checkinRepository.deleteById(id);
+        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
 
-        return "Checkin:" + id + " deleted.";
+        checkinRepository.deleteById(id);
+        return "Check in:" + id + " deletado.";
     }
 
     public List<CheckInResponseAdapter> list() {
@@ -66,7 +87,9 @@ public class CheckinService {
     }
 
     public List<CheckInResponseAdapter> guestsAtTheHotel(Boolean guestsAtTheHotel) {
-        if(guestsAtTheHotel) {
+        if (guestsAtTheHotel == null) throw new IllegalArgumentException("O boolean não pode ser nulo ou vazio.");
+
+        if (guestsAtTheHotel) {
             return checkinMapper.toChekinsDTO(checkinRepository.guestsAtTheHotel(LocalDate.now()));
         }
 
@@ -74,8 +97,7 @@ public class CheckinService {
     }
 
     private CheckIn returnCheckin(Long id) {
-        return checkinRepository.findById(id).orElseThrow(() -> new RuntimeException("Checkin not found."));
-
+        return checkinRepository.findById(id).orElseThrow(() -> new RuntimeException("Check in nao encontrado."));
     }
 
     private BigDecimal calculateAccommodationValue(CheckInRequestAdapter checkInRequest) {
