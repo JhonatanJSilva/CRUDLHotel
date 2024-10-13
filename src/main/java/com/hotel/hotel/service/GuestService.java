@@ -2,14 +2,13 @@ package com.hotel.hotel.service;
 
 import com.hotel.hotel.adapter.guest.GuestRequestAdapter;
 import com.hotel.hotel.adapter.guest.GuestResponseAdapter;
-import com.hotel.hotel.dto.guest.GuestRequestDTO;
-import com.hotel.hotel.dto.guest.GuestResponseDTO;
 import com.hotel.hotel.entity.Guest;
 import com.hotel.hotel.repository.GuestRepository;
 import com.hotel.hotel.util.GuestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service

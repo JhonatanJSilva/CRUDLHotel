@@ -4,8 +4,7 @@ import com.hotel.hotel.adapter.checkin.CheckInRequestAdapter;
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
 import com.hotel.hotel.dto.checkin.CheckinRequestDTO;
 import com.hotel.hotel.dto.checkin.CheckinResponseDTO;
-import com.hotel.hotel.entity.CheckIn;
-import com.hotel.hotel.service.CheckinService;
+import com.hotel.hotel.service.CheckInService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CheckinController {
 
-    private final CheckinService checkinService;
+    private final CheckInService checkinService;
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CheckinRequestDTO checkinRequestDTO, UriComponentsBuilder uriBuilder) {

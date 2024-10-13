@@ -4,12 +4,13 @@ import com.hotel.hotel.adapter.checkin.CheckInRequestAdapter;
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
 import com.hotel.hotel.entity.CheckIn;
 import com.hotel.hotel.entity.Guest;
-import com.hotel.hotel.repository.CheckinRepository;
+import com.hotel.hotel.repository.CheckInRepository;
 import com.hotel.hotel.util.CheckinMapper;
 import com.hotel.hotel.util.CustomDateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -21,9 +22,9 @@ import java.util.Map;
 @Service
 @Primary
 @RequiredArgsConstructor
-public class CheckinService {
+public class CheckInService {
 
-    private final CheckinRepository checkinRepository;
+    private final CheckInRepository checkinRepository;
     private final CheckinMapper checkinMapper;
 
     private final static BigDecimal WEEKDAY_VALUE = BigDecimal.valueOf(120.00);

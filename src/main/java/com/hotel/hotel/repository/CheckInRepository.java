@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface CheckinRepository extends JpaRepository<CheckIn, Long> {
+public interface CheckInRepository extends JpaRepository<CheckIn, Long> {
 
     @Query(value = "SELECT check_in.guest, SUM(hosting_value) AS total_hosting_value FROM check_in WHERE checkout_date < :today GROUP BY check_in.guest", nativeQuery = true)
     List<Map<Integer, BigDecimal>> valueTotalAllGuests(LocalDate today);

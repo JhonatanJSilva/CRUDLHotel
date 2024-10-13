@@ -1,9 +1,10 @@
 package com.hotel.hotel.util;
+
 import com.hotel.hotel.adapter.guest.GuestRequestAdapter;
 import com.hotel.hotel.adapter.guest.GuestResponseAdapter;
-import com.hotel.hotel.dto.guest.GuestResponseDTO;
 import com.hotel.hotel.entity.Guest;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

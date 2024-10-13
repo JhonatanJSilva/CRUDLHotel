@@ -1,6 +1,5 @@
 package com.hotel.hotel.adapter.checkin;
 
-import com.hotel.hotel.dto.checkin.CheckinRequestDTO;
 import com.hotel.hotel.entity.CheckIn;
 import com.hotel.hotel.entity.Guest;
 import lombok.Getter;
@@ -31,5 +30,4 @@ public class CheckInResponseAdapter {
         this.additionalVehicle = checkIn.getAdditionalVehicle();
         this.valueHosting = checkIn.getHostingValue();
     }
-
 }

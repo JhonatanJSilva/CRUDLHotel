@@ -1,7 +1,6 @@
 package com.hotel.hotel.dto.checkin;
 
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
-import com.hotel.hotel.entity.CheckIn;
 import com.hotel.hotel.entity.Guest;
 import lombok.Getter;
 

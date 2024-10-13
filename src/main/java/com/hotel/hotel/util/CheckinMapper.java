@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class CheckinMapper {
 
     public CheckIn toCheckin(CheckInRequestAdapter checkInRequest) {
-        return CheckIn.builder()
+        return com.hotel.hotel.entity.CheckIn.builder()
                 .guest(checkInRequest.getGuest())
                 .checkInDate(checkInRequest.getCheckInDate())
                 .checkoutDate(checkInRequest.getCheckoutDate())
@@ -36,6 +36,4 @@ public class CheckinMapper {
         checkin.setAdditionalVehicle(checkinDTO.getAdditionalVehicle());
         checkin.setHostingValue(checkinDTO.getHostingValue());
     }
-
-
 }
