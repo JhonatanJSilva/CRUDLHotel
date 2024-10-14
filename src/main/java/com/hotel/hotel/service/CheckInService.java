@@ -2,6 +2,7 @@ package com.hotel.hotel.service;
 
 import com.hotel.hotel.adapter.checkin.CheckInRequestAdapter;
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
+import com.hotel.hotel.adapter.guest.GuestRequestAdapter;
 import com.hotel.hotel.entity.CheckIn;
 import com.hotel.hotel.entity.Guest;
 import com.hotel.hotel.repository.CheckInRepository;
@@ -34,15 +35,7 @@ public class CheckInService {
     private final static LocalTime CHECKOUT_HOUR_LIMIT = LocalTime.of(16, 30);
 
     public CheckInResponseAdapter create(CheckInRequestAdapter checkInRequest) {
-        Guest guest = checkInRequest.getGuest();
-        LocalDateTime checkInDate = checkInRequest.getCheckInDate();
-        LocalDateTime checkoutDate = checkInRequest.getCheckoutDate();
-        Boolean additionalVehicle = checkInRequest.getAdditionalVehicle();
-
-        if (guest == null) throw new IllegalArgumentException("O ID do hospede não pode ser nulo ou vazio.");
-        if (checkInDate == null) throw new IllegalArgumentException("A data de check in não pode ser nulo ou vazio.");
-        if (checkoutDate == null) throw new IllegalArgumentException("A data de checkout não pode ser nulo ou vazio.");
-        if (additionalVehicle == null) throw new IllegalArgumentException("O adicional veiculo não pode ser nulo ou vazio.");
+        validateFieldsCheckInRequest(checkInRequest);
 
         checkInRequest.setHostingValue(calculateAccommodationValue(checkInRequest));
         CheckIn checkin = checkinMapper.toCheckin(checkInRequest);
@@ -50,22 +43,14 @@ public class CheckInService {
     }
 
     public CheckInResponseAdapter findById(Long id) {
-        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+        validateFieldsId(id);
 
         return checkinMapper.toChekinResponse(returnCheckin(id));
     }
 
     public CheckInResponseAdapter update(Long id, CheckInRequestAdapter checkInRequest) {
-        Guest guest = checkInRequest.getGuest();
-        LocalDateTime checkInDate = checkInRequest.getCheckInDate();
-        LocalDateTime checkoutDate = checkInRequest.getCheckoutDate();
-        Boolean additionalVehicle = checkInRequest.getAdditionalVehicle();
-
-        if (guest == null) throw new IllegalArgumentException("O ID do hospede não pode ser nulo ou vazio.");
-        if (checkInDate == null) throw new IllegalArgumentException("A data de check in não pode ser nulo ou vazio.");
-        if (checkoutDate == null) throw new IllegalArgumentException("A data de checkout não pode ser nulo ou vazio.");
-        if (additionalVehicle == null) throw new IllegalArgumentException("O adicional veiculo não pode ser nulo ou vazio.");
-        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+        validateFieldsCheckInRequest(checkInRequest);
+        validateFieldsId(id);
 
         CheckIn checkin = returnCheckin(id);
         checkinMapper.updateChekinData(checkin, checkInRequest);
@@ -73,7 +58,7 @@ public class CheckInService {
     }
 
     public String delete(Long id) {
-        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+        validateFieldsId(id);
 
         checkinRepository.deleteById(id);
         return "Check in:" + id + " deletado.";
@@ -133,5 +118,21 @@ public class CheckInService {
         BigDecimal valueDaysWeekend = (weekendTotalValue.multiply(BigDecimal.valueOf(weekend)));
 
         return (valueDaysOfWeek.add(valueDaysWeekend));
+    }
+
+    private void validateFieldsCheckInRequest(CheckInRequestAdapter checkInRequest) {
+        Guest guest = checkInRequest.getGuest();
+        LocalDateTime checkInDate = checkInRequest.getCheckInDate();
+        LocalDateTime checkoutDate = checkInRequest.getCheckoutDate();
+        Boolean additionalVehicle = checkInRequest.getAdditionalVehicle();
+
+        if (guest == null) throw new IllegalArgumentException("O ID do hospede não pode ser nulo ou vazio.");
+        if (checkInDate == null) throw new IllegalArgumentException("A data de check in não pode ser nulo ou vazio.");
+        if (checkoutDate == null) throw new IllegalArgumentException("A data de checkout não pode ser nulo ou vazio.");
+        if (additionalVehicle == null) throw new IllegalArgumentException("O adicional veiculo não pode ser nulo ou vazio.");
+    }
+
+    private void validateFieldsId(Long id) {
+        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
     }
 }

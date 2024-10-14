@@ -19,42 +19,30 @@ public class GuestService {
     private final GuestRepository guestRepository;
     private final GuestMapper guestMapper;
 
-    public GuestResponseAdapter create(GuestRequestAdapter guestAdapter) {
-        String name = guestAdapter.getName();
-        String document = guestAdapter.getDocument();
-        String telephone = guestAdapter.getTelephone();
+    public GuestResponseAdapter create(GuestRequestAdapter guestRequest) {
+        validateFieldsGuestRequest(guestRequest);
 
-        if (name == null || name.isEmpty()) throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
-        if (document == null || document.isEmpty()) throw new IllegalArgumentException("O documento não pode ser nulo ou vazio.");
-        if (telephone == null || telephone.isEmpty()) throw new IllegalArgumentException("O telefone não pode ser nulo ou vazio.");
-
-        Guest guest = guestMapper.toGuest(guestAdapter);
+        Guest guest = guestMapper.toGuest(guestRequest);
         return guestMapper.toGuestResponse(guestRepository.save(guest));
     }
 
     public GuestResponseAdapter findById(Long id) {
-        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+        validateFieldsId(id);
 
         return guestMapper.toGuestResponse(returnGuest(id));
     }
 
-    public GuestResponseAdapter update(Long id, GuestRequestAdapter guestAdapter) {
-        String name = guestAdapter.getName();
-        String document = guestAdapter.getDocument();
-        String telephone = guestAdapter.getTelephone();
-
-        if (name == null || name.isEmpty()) throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
-        if (document == null || document.isEmpty()) throw new IllegalArgumentException("O documento não pode ser nulo ou vazio.");
-        if (telephone == null || telephone.isEmpty()) throw new IllegalArgumentException("O telefone não pode ser nulo ou vazio.");
-        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+    public GuestResponseAdapter update(Long id, GuestRequestAdapter guestRequest) {
+        validateFieldsGuestRequest(guestRequest);
+        validateFieldsId(id);
 
         Guest guest = returnGuest(id);
-        guestMapper.updateGuestData(guest, guestAdapter);
+        guestMapper.updateGuestData(guest, guestRequest);
         return guestMapper.toGuestResponse(guestRepository.save(guest));
     }
 
     public String delete(Long id) {
-        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+        validateFieldsId(id);
 
         guestRepository.deleteById(id);
         return "Hospede id: "+ id +" deletado.";
@@ -64,10 +52,10 @@ public class GuestService {
         return guestMapper.toGuestsDTO(guestRepository.findAll());
     }
 
-    public GuestResponseAdapter find(GuestRequestAdapter requestAdapter) {
-        String name = requestAdapter.getName();
-        String document = requestAdapter.getDocument();
-        String telephone = requestAdapter.getTelephone();
+    public GuestResponseAdapter find(GuestRequestAdapter guestRequest) {
+        String name = guestRequest.getName();
+        String document = guestRequest.getDocument();
+        String telephone = guestRequest.getTelephone();
 
         if (name != null) {
              Guest guestByName = guestRepository.findByName(name);
@@ -95,5 +83,19 @@ public class GuestService {
 
     private Guest returnGuest(Long id) {
         return  guestRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Hospede não encontrado."));
+    }
+
+    private void validateFieldsGuestRequest(GuestRequestAdapter guestRequest) {
+        String name = guestRequest.getName();
+        String document = guestRequest.getDocument();
+        String telephone = guestRequest.getTelephone();
+
+        if (name == null || name.isEmpty()) throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
+        if (document == null || document.isEmpty()) throw new IllegalArgumentException("O documento não pode ser nulo ou vazio.");
+        if (telephone == null || telephone.isEmpty()) throw new IllegalArgumentException("O telefone não pode ser nulo ou vazio.");
+    }
+
+    private void validateFieldsId(Long id) {
+        if (id == null) throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
     }
 }
