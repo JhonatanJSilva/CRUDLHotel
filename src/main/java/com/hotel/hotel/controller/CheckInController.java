@@ -2,14 +2,13 @@ package com.hotel.hotel.controller;
 
 import com.hotel.hotel.adapter.checkin.CheckInRequestAdapter;
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
-import com.hotel.hotel.dto.checkin.CheckinRequestDTO;
-import com.hotel.hotel.dto.checkin.CheckinResponseDTO;
+import com.hotel.hotel.dto.checkin.CheckInRequestDTO;
+import com.hotel.hotel.dto.checkin.CheckInResponseDTO;
 import com.hotel.hotel.service.CheckInService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
@@ -19,16 +18,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/checkin")
 @RequiredArgsConstructor
-public class CheckinController {
+public class CheckInController {
 
-    private final CheckInService checkinService;
+    private final CheckInService checkInService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CheckinRequestDTO checkinRequestDTO, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> create(@RequestBody CheckInRequestDTO checkinRequestDTO, UriComponentsBuilder uriBuilder) {
         try {
             CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
-            CheckInResponseAdapter checkInResponseAdapter = checkinService.create(checkInRequestAdapter);
-            CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
+            CheckInResponseAdapter checkInResponseAdapter = checkInService.create(checkInRequestAdapter);
+            CheckInResponseDTO checkinResponseDTO = new CheckInResponseDTO(checkInResponseAdapter);
 
             URI uri = uriBuilder.path("/checkin/{id}").buildAndExpand(checkinResponseDTO.getId()).toUri();
 
@@ -43,10 +42,10 @@ public class CheckinController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findBiId(@PathVariable(name = "id") Long id) {
         try {
-            CheckInResponseAdapter checkInResponseAdapter = checkinService.findById(id);
-            CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
+            CheckInResponseAdapter checkInResponseAdapter = checkInService.findById(id);
+            CheckInResponseDTO checkInResponseDTO = new CheckInResponseDTO(checkInResponseAdapter);
 
-            return ResponseEntity.ok().body(checkinResponseDTO);
+            return ResponseEntity.ok().body(checkInResponseDTO);
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
@@ -55,13 +54,13 @@ public class CheckinController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<?> update(@RequestBody CheckinRequestDTO checkinRequestDTO, @PathVariable(name = "id") long id) {
+    public ResponseEntity<?> update(@RequestBody CheckInRequestDTO checkinRequestDTO, @PathVariable(name = "id") long id) {
         try {
             CheckInRequestAdapter checkInRequestAdapter = new CheckInRequestAdapter(checkinRequestDTO);
-            CheckInResponseAdapter checkInResponseAdapter = checkinService.update(id, checkInRequestAdapter);
-            CheckinResponseDTO checkinResponseDTO = new CheckinResponseDTO(checkInResponseAdapter);
+            CheckInResponseAdapter checkInResponseAdapter = checkInService.update(id, checkInRequestAdapter);
+            CheckInResponseDTO checkInResponseDTO = new CheckInResponseDTO(checkInResponseAdapter);
 
-            return ResponseEntity.ok().body(checkinResponseDTO);
+            return ResponseEntity.ok().body(checkInResponseDTO);
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
@@ -72,7 +71,7 @@ public class CheckinController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> delete(@PathVariable(value = "id") Long id) {
         try {
-            return ResponseEntity.ok().body(checkinService.delete(id));
+            return ResponseEntity.ok().body(checkInService.delete(id));
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {
@@ -83,10 +82,10 @@ public class CheckinController {
     @GetMapping("/list")
     public ResponseEntity<?> list() {
         try {
-            List<CheckInResponseAdapter> checkInResponseAdapters = checkinService.list();
-            List<CheckinResponseDTO> checkinResponseDTO = checkInResponseAdapters.stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
+            List<CheckInResponseAdapter> checkInResponseAdapters = checkInService.list();
+            List<CheckInResponseDTO> checkInResponseDTO = checkInResponseAdapters.stream().map(CheckInResponseDTO::new).collect(Collectors.toList());
 
-            return ResponseEntity.ok().body(checkinResponseDTO);
+            return ResponseEntity.ok().body(checkInResponseDTO);
         } catch (Exception exception) {
             return ResponseEntity.internalServerError().body("An unexpected error occurred: " + exception.getMessage());
         }
@@ -95,7 +94,7 @@ public class CheckinController {
     @GetMapping("/valueTotalAllGuests")
     public ResponseEntity<?> valueTotalAllGuests() {
         try {
-            List<Map<Integer, BigDecimal>> checkInResponseAdapters = checkinService.valueTotalAllGuests();
+            List<Map<Integer, BigDecimal>> checkInResponseAdapters = checkInService.valueTotalAllGuests();
 
             return ResponseEntity.ok().body(checkInResponseAdapters);
         } catch (Exception exception) {
@@ -106,9 +105,9 @@ public class CheckinController {
     @GetMapping("/guestsAtTheHotel/{guestsAtTheHotel}")
     public ResponseEntity<?> guestsAtTheHotel(@PathVariable(value = "guestsAtTheHotel") Boolean guestsAtTheHotel) {
         try {
-            List<CheckinResponseDTO> checkinResponseDTO = checkinService.guestsAtTheHotel(guestsAtTheHotel).stream().map(CheckinResponseDTO::new).collect(Collectors.toList());
+            List<CheckInResponseDTO> checkInResponseDTO = checkInService.guestsAtTheHotel(guestsAtTheHotel).stream().map(CheckInResponseDTO::new).collect(Collectors.toList());
 
-            return ResponseEntity.ok().body(checkinResponseDTO);
+            return ResponseEntity.ok().body(checkInResponseDTO);
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {

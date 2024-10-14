@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class CheckinMapper {
+public class CheckInMapper {
 
     public CheckIn toCheckin(CheckInRequestAdapter checkInRequest) {
         return com.hotel.hotel.entity.CheckIn.builder()
@@ -21,19 +21,19 @@ public class CheckinMapper {
                 .build();
     }
 
-    public CheckInResponseAdapter toChekinResponse(CheckIn checkin) {
-        return new CheckInResponseAdapter(checkin);
+    public CheckInResponseAdapter toChekinResponse(CheckIn checkIn) {
+        return new CheckInResponseAdapter(checkIn);
     }
 
     public List<CheckInResponseAdapter> toChekinsDTO(List<CheckIn> checkInList) {
         return checkInList.stream().map(CheckInResponseAdapter::new).collect(Collectors.toList());
     }
 
-    public void updateChekinData(CheckIn checkin, CheckInRequestAdapter checkinDTO) {
-        checkin.setGuest(checkinDTO.getGuest());
-        checkin.setCheckInDate(checkinDTO.getCheckInDate());
-        checkin.setCheckoutDate(checkinDTO.getCheckoutDate());
-        checkin.setAdditionalVehicle(checkinDTO.getAdditionalVehicle());
-        checkin.setHostingValue(checkinDTO.getHostingValue());
+    public void updateChekinData(CheckIn checkIn, CheckInRequestAdapter checkInDTO) {
+        checkIn.setGuest(checkInDTO.getGuest());
+        checkIn.setCheckInDate(checkInDTO.getCheckInDate());
+        checkIn.setCheckoutDate(checkInDTO.getCheckoutDate());
+        checkIn.setAdditionalVehicle(checkInDTO.getAdditionalVehicle());
+        checkIn.setHostingValue(checkInDTO.getHostingValue());
     }
 }

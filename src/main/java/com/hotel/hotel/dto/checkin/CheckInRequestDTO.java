@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class CheckinRequestDTO {
+public class CheckInRequestDTO {
 
     private Guest hospede;
 

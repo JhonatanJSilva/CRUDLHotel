@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
-public class CheckinResponseDTO {
+public class CheckInResponseDTO {
 
     private Long id;
 
@@ -22,7 +22,7 @@ public class CheckinResponseDTO {
 
     private BigDecimal valorHospedagem;
 
-    public CheckinResponseDTO(CheckInResponseAdapter responseAdapter) {
+    public CheckInResponseDTO(CheckInResponseAdapter responseAdapter) {
         this.id = responseAdapter.getId();
         this.hospede = responseAdapter.getGuest();
         this.dataEntrada = responseAdapter.getDateCheckin();

@@ -2,11 +2,10 @@ package com.hotel.hotel.service;
 
 import com.hotel.hotel.adapter.checkin.CheckInRequestAdapter;
 import com.hotel.hotel.adapter.checkin.CheckInResponseAdapter;
-import com.hotel.hotel.adapter.guest.GuestRequestAdapter;
 import com.hotel.hotel.entity.CheckIn;
 import com.hotel.hotel.entity.Guest;
 import com.hotel.hotel.repository.CheckInRepository;
-import com.hotel.hotel.util.CheckinMapper;
+import com.hotel.hotel.util.CheckInMapper;
 import com.hotel.hotel.util.CustomDateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -25,8 +24,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CheckInService {
 
-    private final CheckInRepository checkinRepository;
-    private final CheckinMapper checkinMapper;
+    private final CheckInRepository checkInRepository;
+    private final CheckInMapper checkInMapper;
 
     private final static BigDecimal WEEKDAY_VALUE = BigDecimal.valueOf(120.00);
     private final static BigDecimal WEEKEND_VALUE = BigDecimal.valueOf(150.00);
@@ -38,14 +37,14 @@ public class CheckInService {
         validateFieldsCheckInRequest(checkInRequest);
 
         checkInRequest.setHostingValue(calculateAccommodationValue(checkInRequest));
-        CheckIn checkin = checkinMapper.toCheckin(checkInRequest);
-        return checkinMapper.toChekinResponse(checkinRepository.save(checkin));
+        CheckIn checkIn = checkInMapper.toCheckin(checkInRequest);
+        return checkInMapper.toChekinResponse(checkInRepository.save(checkIn));
     }
 
     public CheckInResponseAdapter findById(Long id) {
         validateFieldsId(id);
 
-        return checkinMapper.toChekinResponse(returnCheckin(id));
+        return checkInMapper.toChekinResponse(returnCheckIn(id));
     }
 
     public CheckInResponseAdapter update(Long id, CheckInRequestAdapter checkInRequest) {
@@ -53,38 +52,38 @@ public class CheckInService {
         validateFieldsId(id);
 
         checkInRequest.setHostingValue(calculateAccommodationValue(checkInRequest));
-        CheckIn checkin = returnCheckin(id);
-        checkinMapper.updateChekinData(checkin, checkInRequest);
-        return checkinMapper.toChekinResponse(checkinRepository.save(checkin));
+        CheckIn checkin = returnCheckIn(id);
+        checkInMapper.updateChekinData(checkin, checkInRequest);
+        return checkInMapper.toChekinResponse(checkInRepository.save(checkin));
     }
 
     public String delete(Long id) {
         validateFieldsId(id);
 
-        checkinRepository.deleteById(id);
+        checkInRepository.deleteById(id);
         return "Check in:" + id + " deletado.";
     }
 
     public List<CheckInResponseAdapter> list() {
-        return checkinMapper.toChekinsDTO(checkinRepository.findAll());
+        return checkInMapper.toChekinsDTO(checkInRepository.findAll());
     }
 
     public List<Map<Integer, BigDecimal>> valueTotalAllGuests() {
-        return checkinRepository.valueTotalAllGuests(LocalDate.now());
+        return checkInRepository.valueTotalAllGuests(LocalDate.now());
     }
 
     public List<CheckInResponseAdapter> guestsAtTheHotel(Boolean guestsAtTheHotel) {
         if (guestsAtTheHotel == null) throw new IllegalArgumentException("O boolean não pode ser nulo ou vazio.");
 
         if (guestsAtTheHotel) {
-            return checkinMapper.toChekinsDTO(checkinRepository.guestsAtTheHotel(LocalDate.now()));
+            return checkInMapper.toChekinsDTO(checkInRepository.guestsAtTheHotel(LocalDate.now()));
         }
 
-        return checkinMapper.toChekinsDTO(checkinRepository.guestsAreNotInTheHotel(LocalDate.now()));
+        return checkInMapper.toChekinsDTO(checkInRepository.guestsAreNotInTheHotel(LocalDate.now()));
     }
 
-    private CheckIn returnCheckin(Long id) {
-        return checkinRepository.findById(id).orElseThrow(() -> new RuntimeException("Check in nao encontrado."));
+    private CheckIn returnCheckIn(Long id) {
+        return checkInRepository.findById(id).orElseThrow(() -> new RuntimeException("Check in nao encontrado."));
     }
 
     private BigDecimal calculateAccommodationValue(CheckInRequestAdapter checkInRequest) {

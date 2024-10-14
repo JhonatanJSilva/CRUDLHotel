@@ -1,6 +1,6 @@
 package com.hotel.hotel.adapter.checkin;
 
-import com.hotel.hotel.dto.checkin.CheckinRequestDTO;
+import com.hotel.hotel.dto.checkin.CheckInRequestDTO;
 import com.hotel.hotel.entity.Guest;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +22,7 @@ public class CheckInRequestAdapter {
 
     private BigDecimal hostingValue;
 
-    public CheckInRequestAdapter(CheckinRequestDTO checkinRequestDTO) {
+    public CheckInRequestAdapter(CheckInRequestDTO checkinRequestDTO) {
         this.guest = checkinRequestDTO.getHospede();
         this.checkInDate = checkinRequestDTO.getDataEntrada();
         this.checkoutDate = checkinRequestDTO.getDataSaida();

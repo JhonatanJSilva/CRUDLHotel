@@ -21,6 +21,4 @@ public interface CheckInRepository extends JpaRepository<CheckIn, Long> {
 
     @Query(value = "SELECT * FROM check_in WHERE check_in_date < :today AND checkout_date >= :today", nativeQuery = true)
     List<CheckIn> guestsAtTheHotel(LocalDate today);
-
-
 }
