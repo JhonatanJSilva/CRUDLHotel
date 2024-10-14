@@ -52,6 +52,7 @@ public class CheckInService {
         validateFieldsCheckInRequest(checkInRequest);
         validateFieldsId(id);
 
+        checkInRequest.setHostingValue(calculateAccommodationValue(checkInRequest));
         CheckIn checkin = returnCheckin(id);
         checkinMapper.updateChekinData(checkin, checkInRequest);
         return checkinMapper.toChekinResponse(checkinRepository.save(checkin));
